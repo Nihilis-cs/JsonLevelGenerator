@@ -1,14 +1,15 @@
 import { useForm, Controller } from 'react-hook-form';
-import LevelEditor, { IsoCell, Level, LevelEditorParams } from './LevelEditor';
+
 import { Button, Input } from 'antd';
 import { useState } from 'react';
 import { LevelEditorTable } from './LevelEditorTable';
+import { LevelEditorParams } from '../Types/level.types';
 
 
 function LevelParametor() {
     //const navigate = useNavigate();
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
-    const [levelData, setLevelData] = useState<LevelEditorParams | undefined>();
+    const [levelData, setLevelData] = useState<LevelEditorParams>();
     const { control, handleSubmit, formState } = useForm<LevelEditorParams>();
 
     const onSubmit = (data: LevelEditorParams) => {
@@ -63,12 +64,7 @@ function LevelParametor() {
             </div>
             {isInitialized &&
                 <div>
-                    {/* <LevelEditorTable lines={levelData.lines} columns={levelData.columns}></LevelEditorTable> */}
-                    {/* <LevelEditor params={{
-                        lines: levelData.lines,
-                        columns: levelData.columns,
-                        isInitializedProp: true
-                    }} level={level}></LevelEditor> */}
+                    <LevelEditorTable lines={levelData?.lines ?? 0} columns={levelData?.columns ?? 0}></LevelEditorTable>
                 </div>}
 
 

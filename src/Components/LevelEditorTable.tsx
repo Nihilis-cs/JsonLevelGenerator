@@ -12,6 +12,7 @@ export function LevelEditorTable (props: ILevelEditorTableProps) {
     const level: Level = {grid: []};
     useEffect(() => {
         for (let yy = 0; yy < props.columns; yy++) {
+            level.grid[yy] = [];
             for (let xx = 0; xx < props.lines; xx++) {
                 level.grid[yy][xx] = newCell;
             }

@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import useImage from 'use-image';
+import { Coords, Level, LevelEditorParams, TileSet } from '../Types/level.types';
 import { CellEditor } from './CellEditor';
 
 
@@ -9,47 +10,7 @@ interface LevelEditorProps {
     params: LevelEditorParams;
     level: Level;
 }
-export type LevelEditorParams = {
-    lines: number;
-    columns: number;
-    isInitializedProp: boolean;
-}
-export type Coords = {
-    posX: number;
-    posY: number;
-}
-export type Content = {
-    positionGrid: Coords;
-    posZ: number;
-    sprite_index: string;
-    image_index: number;
-    image_xscale: number;
-    image_yscale: number;
-    x: number;
-    y: number;
-}
 
-export type ContentAlt = {
-    tileCode: number,
-    heightPixels: number,
-    isWalkable: boolean,
-    content: Content[];
-}
-
-export type IsoCell = {
-    tileCode: TileSet[];
-    heightPixels: number;
-    isWalkable: boolean;
-    content: Content[];
-}
-export type TileSet = {
-    tileCode: number;
-    posZ: number;
-}
-
-export type Level = {
-    grid: IsoCell[][];
-}
 
 function LevelEditor({ params, level }: LevelEditorProps) {
     const TILE_SIZE: number = 32;
@@ -68,20 +29,20 @@ function LevelEditor({ params, level }: LevelEditorProps) {
             alert(mouseX + ", " + mouseY + " Out of bounds");
         }
     }
-    // const [isInitialized, setInitialized] = useState<boolean>(false);
-    // useEffect(() => {
-    //     initializeGrid();
-    //     setInitialized(true);
-    // })
-    // const initializeGrid = () => {
-    //     for (let i = 0; i < level.grid.length; i++) {
-    //         for (let j = 0; j < level.grid[i].length; j++) {
-    //             getTile(level.grid[i][j].tileCode[0]);
-    //         }
-    //     }
-    //     console.log("drawing...");
-    //     console.log(level.grid);
-    // };
+    const [isInitialized, setInitialized] = useState<boolean>(false);
+    useEffect(() => {
+        initializeGrid();
+        setInitialized(true);
+    })
+    const initializeGrid = () => {
+        for (let i = 0; i < level.grid.length; i++) {
+            for (let j = 0; j < level.grid[i].length; j++) {
+                getTile(level.grid[i][j].tileCode[0]);
+            }
+        }
+        console.log("drawing...");
+        console.log(level.grid);
+    };
     const [activeCell, setActiveCell] = useState<Coords>({ posX: 0, posY: 0 });
 
     const getTile = (tile: TileSet) => {
