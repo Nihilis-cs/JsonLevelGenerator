@@ -2,7 +2,7 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { Button, Input } from 'antd';
 import { useState } from 'react';
-import { LevelEditorTable } from './LevelEditorTable';
+import { LevelEditor } from './LevelEditor';
 import { LevelEditorParams } from '../Types/level.types';
 
 
@@ -27,22 +27,22 @@ function LevelParametor() {
                         <div>
                             <Controller
                                 control={control}
-                                name="columns"
+                                name="lines"
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Number of columns" allowClear {...field} />
+                                        <Input type='number' placeholder="Number of lines" allowClear {...field} />
                                     </>}
                             />
                         </div>
                         <div>
                             <Controller
                                 control={control}
-                                name="lines"
+                                name="columns"
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Number of lines" allowClear {...field} />
+                                        <Input type='number' placeholder="Number of columns" allowClear {...field} />
                                         {fieldState.error && <div>{fieldState.error.message}</div>}
                                     </>}
                             />
@@ -64,8 +64,9 @@ function LevelParametor() {
             </div>
             {isInitialized &&
                 <div>
-                    <LevelEditorTable lines={levelData?.lines ?? 0} columns={levelData?.columns ?? 0}></LevelEditorTable>
-                </div>}
+                    <LevelEditor lines={levelData?.lines ?? 0} columns={levelData?.columns ?? 0}></LevelEditor>
+                </div>
+            }
 
 
         </div>

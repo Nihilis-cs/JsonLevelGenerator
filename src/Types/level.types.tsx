@@ -19,11 +19,10 @@ export type Content = {
 }
 
 export type ContentAlt = {
-    tileCode: number,
+    tileCode: TileSet[],
     heightPixels: number,
     isWalkable: boolean,
     content: Content[];
-    contentAlt: ContentAlt[];
 }
 
 export type IsoCell = {
@@ -31,6 +30,7 @@ export type IsoCell = {
     heightPixels: number;
     isWalkable: boolean;
     content: Content[];
+    contentAlt: ContentAlt[];
 }
 export type TileSet = {
     tileCode: number;
