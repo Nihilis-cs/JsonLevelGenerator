@@ -35,6 +35,7 @@ export type IsoCell = {
 export type TileSet = {
     tileCode: number;
     posZ: number;
+    height: number;
 }
 
 export type Level = {

@@ -22,7 +22,7 @@ export type Dimensions = {
 
 
 export function LevelEditor(props: ILevelEditorTableProps) {
-    const newCell = { tileCode: [{ tileCode: 8, posZ: 0 }], heightPixels: 0, isWalkable: true, content: [], contentAlt: [] }
+    const newCell = { tileCode: [{ tileCode: 8, posZ: 0, height: 0 }], heightPixels: 0, isWalkable: true, content: [], contentAlt: [] }
     const [level, setLevel] = useState<Level>({ grid: [[newCell]] });
     const [activeCell, setActiveCell] = useState<Coords>({ posX: 0, posY: 0 });
     const TILE_SIZE: number = 16;
@@ -63,13 +63,13 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             }
 
         }
-        setDimensions({ w: props.columns * TILE_SIZE * 2 + TILE_SIZE * 2, h: props.lines * TILE_SIZE + TILE_SIZE * 2 });
+        setDimensions({ w: props.lines * 2 *  TILE_SIZE * 2 + TILE_SIZE * 2, h: props.columns *1.5 *  TILE_SIZE + TILE_SIZE * 2 });
         setLevel(vLevel);
         console.log(level.grid);
     }, [props.lines, props.columns]);
 
     const moveCursor = (dir: string) => {
-        if (dir === 'r' && activeCell.posX < props.columns - 1) {
+        if (dir === 'r' && activeCell.posX < props.lines - 1) {
             setActiveCell({ posX: activeCell.posX + 1, posY: activeCell.posY })
         }
         if (dir === 'l' && activeCell.posX > 0) {
@@ -78,7 +78,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         if (dir === 'u' && activeCell.posY > 0) {
             setActiveCell({ posX: activeCell.posX, posY: activeCell.posY - 1 })
         }
-        if (dir === 'd' && activeCell.posY < props.lines - 1) {
+        if (dir === 'd' && activeCell.posY < props.columns - 1) {
             setActiveCell({ posX: activeCell.posX, posY: activeCell.posY + 1 })
         }
     }
@@ -120,28 +120,33 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         <div>
             <div className=''>
                 <div>
-                    <Button type="default" onClick={onSave}>Save Level</Button>
-                    ActiveCell: {activeCell.posX}, {activeCell.posY}
-                    <div className='grid grid-cols-4'>
-                        <div className="grid grid-cols-4">
+
+                    <div className='grid grid-cols-2'>
+                        <div className="grid grid-cols-6">
                             <div></div>
                             <div><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
                             <div></div>
-                            <div></div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
+                                Add Content
+                            </Button></div>
+                            <div><Button className='w-32'  type="default" block onClick={onSave}>Save Level</Button></div>
 
                             <div><Button onClick={() => moveCursor('l')}><CaretLeftOutlined /></Button></div>
-                            <div></div>
+                            <div className="text-center m-1">{activeCell.posX}, {activeCell.posY}</div>
                             <div><Button onClick={() => moveCursor('r')}><CaretRightOutlined /></Button></div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
+                                Add Content Alt
+                            </Button></div>
                             <div></div>
 
                             <div></div>
                             <div><Button onClick={() => moveCursor('d')}><CaretDownOutlined /></Button></div>
                             <div></div>
-                            <div><Button type="default" onClick={() => setEditorOpen(true)}>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
                                 Edit
                             </Button></div>
                         </div>
-
+                        <div></div>
 
 
                     </div>
@@ -196,7 +201,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                 line.map((cell, indexX) => {
                                     let coords = twoDToIso({ posX: indexX * TILE_SIZE, posY: indexY * TILE_SIZE })
                                     return (
-                                        cell.tileCode.map((tile, i) => {
+                                        cell.tileCode.map((tile) => {
                                             return (
                                                 <Sprite
                                                     key={indexX + ' ' + indexY + ' ' + tile.posZ}
@@ -204,7 +209,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                     width={32}
                                                     height={32}
                                                     x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                    y={coords.posY - tile.posZ * 2} />)
+                                                    y={coords.posY + TILE_SIZE - ( tile.posZ * 2)} />)
                                         }
                                         ))
                                 })
@@ -216,7 +221,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                             width={32}
                             height={32}
                             x={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posX + dimensions.w / 2 - TILE_SIZE}
-                            y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY} />
+                            y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY + TILE_SIZE} />
                     </Stage>
                 </div>
             </div >

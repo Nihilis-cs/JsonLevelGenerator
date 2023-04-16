@@ -31,7 +31,7 @@ function LevelParametor() {
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Number of lines" allowClear {...field} />
+                                        <Input type='number' placeholder="Length of columns" allowClear {...field} />
                                     </>}
                             />
                         </div>
@@ -42,14 +42,14 @@ function LevelParametor() {
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Number of columns" allowClear {...field} />
+                                        <Input type='number' placeholder="Length of lines" allowClear {...field} />
                                         {fieldState.error && <div>{fieldState.error.message}</div>}
                                     </>}
                             />
                         </div>
                         <div>
                             {formState.isValid &&
-                                <Button type="primary" htmlType="submit">
+                                <Button type="default" htmlType="submit">
                                     Submit
                                 </Button>
                             }
