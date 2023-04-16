@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Coords, IsoCell, Level, TileSet } from '../Types/level.types';
+import { Content, Coords, IsoCell, Level, TileSet } from '../Types/level.types';
 import { Sprite, Stage } from '@pixi/react';
 import { CellEditor } from './CellEditor';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Input } from 'antd';
 import { CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined } from '@ant-design/icons';
+import { ContentEditor } from './ContentEditor';
 
 
 
@@ -29,6 +30,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     const [dimensions, setDimensions] = useState<Dimensions>({ w: 1248, h: 800 })
     const { control, handleSubmit } = useForm<Coords>();
     const [isEditorOpen, setEditorOpen] = useState<boolean>(false);
+    const [isContentOpen, setContentOpen] = useState<boolean>(false);
 
     const captureMousePos = (e: React.MouseEvent) => {
         var coords = isoTo2D({ posX: e.clientX, posY: e.clientY })
@@ -63,7 +65,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             }
 
         }
-        setDimensions({ w: props.lines * 2 *  TILE_SIZE * 2 + TILE_SIZE * 2, h: props.columns *1.5 *  TILE_SIZE + TILE_SIZE * 2 });
+        setDimensions({ w: props.lines * 2 * TILE_SIZE * 2 + TILE_SIZE * 2, h: props.columns * 1.5 * TILE_SIZE + TILE_SIZE * 2 });
         setLevel(vLevel);
         console.log(level.grid);
     }, [props.lines, props.columns]);
@@ -89,6 +91,11 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         console.log(img.src)
         return img;
     };
+    const getContent = (index : number) => {
+        const img = new Image();
+        img.src = '../../decor/decor' + index + '.png';
+        return img;
+    }
     const getCursor = () => {
         const img = new Image();
         img.src = "../../gui/cursor.png";
@@ -111,8 +118,16 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             setLevel(vLevel);
             console.log("level updated");
         }
-
         setEditorOpen(false);
+    }
+    const editContent = (content: Content) => {
+        var vCell = level.grid[activeCell.posY][activeCell.posX];
+        vCell.content = [];
+        vCell.content.push(content);
+        var vLevel = level;
+        vLevel.grid[activeCell.posY][activeCell.posX] = vCell;
+        setLevel(vLevel);
+        setContentOpen(false);
     }
 
 
@@ -126,15 +141,15 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                             <div></div>
                             <div><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
                             <div></div>
-                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
+                            <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setContentOpen(true)}>
                                 Add Content
                             </Button></div>
-                            <div><Button className='w-32'  type="default" block onClick={onSave}>Save Level</Button></div>
+                            <div><Button className='w-32' type="default" block onClick={onSave}>Save Level</Button></div>
 
                             <div><Button onClick={() => moveCursor('l')}><CaretLeftOutlined /></Button></div>
                             <div className="text-center m-1">{activeCell.posX}, {activeCell.posY}</div>
                             <div><Button onClick={() => moveCursor('r')}><CaretRightOutlined /></Button></div>
-                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
+                            <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setEditorOpen(true)}>
                                 Add Content Alt
                             </Button></div>
                             <div></div>
@@ -151,38 +166,6 @@ export function LevelEditor(props: ILevelEditorTableProps) {
 
                     </div>
                     <div>
-                        {/* <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className='grid grid-cols-5 gap-4'>
-                            <div></div>
-                            <div>
-                                <Controller
-                                    control={control}
-                                    name="posY"
-                                    rules={{ required: true, min: 0, max: props.columns - 1 }}
-                                    render={({ field, fieldState }) =>
-                                        <>
-                                            <Input type='number' placeholder="Cell Y" allowClear {...field} />
-                                        </>} />
-                            </div>
-                            <div>
-                                <Controller
-                                    control={control}
-                                    name="posX"
-                                    rules={{ required: true, min: 0, max: props.columns - 1 }}
-                                    render={({ field, fieldState }) =>
-                                        <>
-                                            <Input type='number' placeholder="Cell X" allowClear {...field} />
-                                        </>}
-                                />
-                            </div>
-                            <div className='grid grid-cols-2'>
-                                <Button type="primary" htmlType="submit">
-                                    Change
-                                </Button>
-
-                            </div>
-                        </div>
-                    </form> */}
                     </div>
 
                 </div>
@@ -190,9 +173,16 @@ export function LevelEditor(props: ILevelEditorTableProps) {
 
                     <CellEditor
                         open={isEditorOpen}
-                        cell={level.grid ? level.grid[activeCell.posY][activeCell.posX] : newCell}
+                        cell={level.grid[activeCell.posY][activeCell.posX]}
                         onCancel={() => setEditorOpen(false)}
                         onSaveChanges={(cell?) => { editCell(cell!) }} />
+
+                    <ContentEditor cell={level.grid[activeCell.posY][activeCell.posX]}
+                        coords={activeCell}
+                        open={isContentOpen}
+                        onSaveChanges={(content) => editContent(content)}
+                        onCancel={() => setContentOpen(false)}
+                    />
                 </div>
                 <div className="overflow-auto flex justify-center mt-8" >
                     <Stage width={dimensions.w} height={dimensions.h} options={{ backgroundColor: "#ffffff" }}>
@@ -201,17 +191,32 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                 line.map((cell, indexX) => {
                                     let coords = twoDToIso({ posX: indexX * TILE_SIZE, posY: indexY * TILE_SIZE })
                                     return (
-                                        cell.tileCode.map((tile) => {
-                                            return (
+                                        <>
+                                            {cell.tileCode.map((tile) => {
+                                                return (
+                                                    <Sprite
+                                                        key={indexX + ' ' + indexY + ' ' + tile.posZ}
+                                                        image={getTile(tile)}
+                                                        width={32}
+                                                        height={32}
+                                                        x={coords.posX + dimensions.w / 2 - TILE_SIZE}
+                                                        y={coords.posY + TILE_SIZE - (tile.posZ * 2)} />)
+                                            }
+                                            )}
+                                            {cell.content.length != 0 &&
                                                 <Sprite
-                                                    key={indexX + ' ' + indexY + ' ' + tile.posZ}
-                                                    image={getTile(tile)}
-                                                    width={32}
-                                                    height={32}
+                                                    key={indexX + ' ' + indexY + ' ' + cell.content[0].posZ}
+                                                    image={getContent(cell.content[0].image_index)}
+                                                    width={96}
+                                                    height={96}
                                                     x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                    y={coords.posY + TILE_SIZE - ( tile.posZ * 2)} />)
-                                        }
-                                        ))
+                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)} />
+
+                                            }
+                                        </>
+                                    )
+
+
                                 })
                             )
 
@@ -227,4 +232,8 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             </div >
         </div>
     );
+}
+
+function CellSprite(indexX: number, indexY: number, cell: IsoCell) {
+
 }
