@@ -14,7 +14,7 @@ export interface ICellEditorProps {
 }
 
 export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorProps) {
-  const { control, register, handleSubmit, formState, reset, watch} = useForm<IsoCell>({
+  const { control, register, handleSubmit, formState, reset, watch } = useForm<IsoCell>({
     defaultValues: {
       content: cell.content,
       contentAlt: cell.contentAlt,
@@ -27,6 +27,13 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
     control,
     name: "tileCode",
+  });
+  const watchFieldArray = watch("tileCode");
+  const controlledFields = fields.map((field, index) => {
+    return {
+      ...field,
+      ...watchFieldArray[index]
+    };
   });
 
   const getTitle = () => {
@@ -65,7 +72,14 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
           <Button onClick={() => { remove(cell.tileCode.length) }} >-</Button>
           <div className='grid grid-cols-3'>
             <div>
-              {fields.map((field, index) => (
+              {controlledFields.map((field, index) => {
+                return (
+                <div className='grid grid-cols-2'>
+                  <input {...register(`tileCode.${index}.tileCode` as const)} />
+                  <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32} />
+                </div>);
+              })}
+              {/* {fields.map((field, index) => (
                 <div key={field.id}>
                   <section className={"section"} key={field.id}>
                     <div className='grid grid-cols-2'>
@@ -73,19 +87,19 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
                         placeholder='TileCode'
                         defaultValue={index < cell.tileCode.length ? cell.tileCode[index].tileCode : 8}
                         {...register(`tileCode.${index}.tileCode` as const)}
-                      />
-                      {/* <input
+                      /> */}
+              {/* <input
                         placeholder="PosZ"
                         defaultValue={index < cell.tileCode.length ? cell.tileCode[index].posZ : 0}
                         {...register(`tileCode.${index}.posZ` as const)}
                       /> */}
-                      {(index < cell.tileCode.length) &&
+              {/* {(index < cell.tileCode.length) &&
                         <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32}/>
                       }
                     </div>
                   </section>
                 </div>
-              ))}
+              ))} */}
             </div>
             <div></div>
             <div>

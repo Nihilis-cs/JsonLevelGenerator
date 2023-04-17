@@ -17,10 +17,11 @@ type FormContent = {
 }
 
 export function ContentEditor({ cell, coords, open, onSaveChanges, onCancel }: IContentEditorProps) {
-    const { control, handleSubmit } = useForm<FormContent>();
+    const { control, handleSubmit, watch } = useForm<FormContent>({ defaultValues: { index: 1 } });
     const getDecor = (index: number) => {
         return (<img src={"../../decor/decor" + index + ".png"} />);
     }
+    const watcher = watch(["index"]);
     const onSubmit = (data: FormContent) => {
         var vContent: Content = {
             image_index: data.index,
@@ -35,15 +36,20 @@ export function ContentEditor({ cell, coords, open, onSaveChanges, onCancel }: I
         onSaveChanges(vContent);
     }
     return (
-        <Modal open={open} closable={true} title="Edit Content" onCancel={onCancel} onOk={handleSubmit(onSubmit)}>
+        <Modal open={open} closable={false} title="Edit Content" onCancel={onCancel} onOk={handleSubmit(onSubmit)}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                     name="index"
                     control={control}
                     render={({ field, fieldState }) =>
-                        <>
+                        <div className='flex flex-col px-auto'>
+                            <div className=' flex flex-row flex-grow mb-4'>
+                                <div className='flex-grow'></div>
+                                <img src={'../../decor/decor' + watcher + '.png'} width={96} height={96} />
+                                <div className='flex-grow'></div>
+                            </div>
                             <Input type='number' min={1} max={contentDico.length} {...field} />
-                        </>
+                        </div>
                     }
                 />
             </form>
