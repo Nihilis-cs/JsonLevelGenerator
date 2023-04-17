@@ -45,11 +45,12 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
 
     data.content = cell.content;
     data.contentAlt = cell.contentAlt;
+    var vHeightAt = 0;
     for (let i = 0; i < data.tileCode.length; i++) {
-      //data.tileCode[i] = dictionary[data.tileCode[i].tileCode]
-      data.heightPixels += data.tileCode[i].height;
+      data.tileCode[i].posZ = vHeightAt;
+      vHeightAt += dictionary[data.tileCode[i].tileCode].height
     }
-
+    data.heightPixels = vHeightAt;
     var vCell = data;
     console.log(vCell);
     reset();
@@ -67,17 +68,17 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
               {fields.map((field, index) => (
                 <div key={field.id}>
                   <section className={"section"} key={field.id}>
-                    <div className='grid grid-cols-3'>
+                    <div className='grid grid-cols-2'>
                       <input
                         placeholder='TileCode'
                         defaultValue={index < cell.tileCode.length ? cell.tileCode[index].tileCode : 8}
                         {...register(`tileCode.${index}.tileCode` as const)}
                       />
-                      <input
+                      {/* <input
                         placeholder="PosZ"
                         defaultValue={index < cell.tileCode.length ? cell.tileCode[index].posZ : 0}
                         {...register(`tileCode.${index}.posZ` as const)}
-                      />
+                      /> */}
                       {(index < cell.tileCode.length) &&
                         <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32}/>
                       }

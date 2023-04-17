@@ -61,7 +61,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         for (let yy = 0; yy < props.columns; yy++) {
             vLevel.grid[yy] = [];
             for (let xx = 0; xx < props.lines; xx++) {
-                vLevel.grid[yy][xx] = newCell;
+                vLevel.grid[yy][xx] = { tileCode: [{ tileCode: 8, posZ: 0, height: 0 }], heightPixels: 0, isWalkable: true, content: [], contentAlt: [] };
             }
 
         }
@@ -123,7 +123,10 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     const editContent = (content: Content) => {
         var vCell = level.grid[activeCell.posY][activeCell.posX];
         vCell.content = [];
+        content.posZ = vCell.heightPixels;
+        console.log(vCell.heightPixels);
         vCell.content.push(content);
+        console.log(vCell);
         var vLevel = level;
         vLevel.grid[activeCell.posY][activeCell.posX] = vCell;
         setLevel(vLevel);
@@ -135,13 +138,12 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         <div>
             <div className=''>
                 <div>
-
                     <div className='grid grid-cols-2'>
                         <div className="grid grid-cols-6">
                             <div></div>
                             <div><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
                             <div></div>
-                            <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setContentOpen(true)}>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setContentOpen(true)}>
                                 Add Content
                             </Button></div>
                             <div><Button className='w-32' type="default" block onClick={onSave}>Save Level</Button></div>
@@ -210,7 +212,8 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                     width={96}
                                                     height={96}
                                                     x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)} />
+                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)} 
+                                                    anchor={{ x: 0.33, y: 0.71 }}/>
 
                                             }
                                         </>
