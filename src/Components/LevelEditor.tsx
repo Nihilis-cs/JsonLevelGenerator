@@ -91,7 +91,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         console.log(img.src)
         return img;
     };
-    const getContent = (index : number) => {
+    const getContent = (index: number) => {
         const img = new Image();
         img.src = '../../decor/decor' + index + '.png';
         return img;
@@ -127,6 +127,14 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         console.log(vCell.heightPixels);
         vCell.content.push(content);
         console.log(vCell);
+        var vLevel = level;
+        vLevel.grid[activeCell.posY][activeCell.posX] = vCell;
+        setLevel(vLevel);
+        setContentOpen(false);
+    }
+    const emptyContent = () => {
+        var vCell = level.grid[activeCell.posY][activeCell.posX];
+        vCell.content = [];
         var vLevel = level;
         vLevel.grid[activeCell.posY][activeCell.posX] = vCell;
         setLevel(vLevel);
@@ -184,6 +192,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                         open={isContentOpen}
                         onSaveChanges={(content) => editContent(content)}
                         onCancel={() => setContentOpen(false)}
+                        emptyContent={() => emptyContent()}
                     />
                 </div>
                 <div className="overflow-auto flex justify-center mt-8" >
@@ -212,8 +221,8 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                     width={96}
                                                     height={96}
                                                     x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)} 
-                                                    anchor={{ x: 0.33, y: 0.68 }}/>
+                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)}
+                                                    anchor={{ x: 0.33, y: 0.68 }} />
 
                                             }
                                         </>

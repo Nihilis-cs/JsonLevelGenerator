@@ -75,7 +75,7 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
               {controlledFields.map((field, index) => {
                 return (
                 <div className='grid grid-cols-2'>
-                  <input {...register(`tileCode.${index}.tileCode` as const)} />
+                  <input type='number' {...register(`tileCode.${index}.tileCode` as const)} />
                   <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32} />
                 </div>);
               })}
