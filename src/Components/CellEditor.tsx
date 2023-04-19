@@ -42,9 +42,6 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
   }
 
   const onSubmit = (data: IsoCell) => {
-    console.log("cell before:");
-    console.log(cell);
-
     data.content = cell.content;
     data.contentAlt = cell.contentAlt;
     var vHeightAt = 0;
@@ -54,7 +51,6 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
     }
     data.heightPixels = vHeightAt;
     var vCell = data;
-    console.log(vCell);
     reset();
     onSaveChanges(vCell);
   }
@@ -92,7 +88,6 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
                     </>
                   }
                 />
-                <div>{cell.heightPixels}</div>
               </div>
             </div>
           </div>
