@@ -3,27 +3,22 @@ import { IsoCell, TileSet } from '../Types/level.types';
 import { Button, Checkbox, Input, Modal, Select } from 'antd';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import dictionary from '../Dictionary/tiles.dico';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { useEffect } from 'react';
 
 
 export interface ICellEditorProps {
   open: boolean
   cell: IsoCell;
-  onSaveChanges: (cell?: IsoCell) => void;
+  onSaveChanges: (cell: IsoCell) => void;
   onCancel: () => void;
 
 }
 
 export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorProps) {
-  const { control, register, handleSubmit, formState, reset, watch } = useForm<IsoCell>({
-    defaultValues: {
-      content: cell.content,
-      contentAlt: cell.contentAlt,
-      heightPixels: cell.heightPixels,
-      isWalkable: cell.isWalkable,
-      tileCode: cell.tileCode
-    }
+  const { control, register, handleSubmit, formState, reset, watch, setValue } = useForm<IsoCell>({
+    defaultValues: cell
   });
-  const newTileCode: TileSet = { tileCode: 11, posZ: 0, height: 0 }
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tileCode",
@@ -35,7 +30,7 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
       ...watchFieldArray[index]
     };
   });
-
+  
   const getTitle = () => {
     var vTitle: string = "Edit cell"
     return vTitle;
@@ -69,15 +64,15 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
       <div className='h-80'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-4 ">
-            <Button onClick={() => { remove(cell.tileCode.length) }}>-</Button>
-            <Button onClick={() => { append(newTileCode) }} >+</Button>
+            <Button onClick={() => { remove(cell.tileCode.length) }}><MinusOutlined /></Button>
+            <Button onClick={() => { append({ tileCode: 11, posZ: 0, height: 0 }) }} ><PlusOutlined /></Button>
 
           </div>
           <div className='grid grid-cols-2'>
             <div className="overflow-auto">
               {controlledFields.map((field, index) => {
                 return (
-                  <div className='grid grid-cols-3 gap-4'>
+                  <div className='grid grid-cols-3 gap-4' key={field.id}>
                     <input type='number' {...register(`tileCode.${index}.tileCode` as const)} />
                     <img className="col-span-2" src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32} />
                   </div>);
@@ -97,6 +92,7 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
                     </>
                   }
                 />
+                <div>{cell.heightPixels}</div>
               </div>
             </div>
           </div>
@@ -105,3 +101,7 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
     </Modal >
   );
 }
+function useEfffect(arg0: () => void, arg1: import("react-hook-form").UseFormRegister<IsoCell>[]) {
+  throw new Error('Function not implemented.');
+}
+

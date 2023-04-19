@@ -27,9 +27,10 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     const newCell = { tileCode: [{ tileCode: 8, posZ: 0, height: 0 }], heightPixels: 0, isWalkable: true, content: [], contentAlt: [] }
     const [level, setLevel] = useState<Level>({ grid: [[newCell]] });
     const [activeCell, setActiveCell] = useState<Coords>({ posX: 0, posY: 0 });
+    const [copiedCell, setCopiedCell] = useState<Coords>();
     const TILE_SIZE: number = 16;
     const [dimensions, setDimensions] = useState<Dimensions>({ w: 1248, h: 800 })
-    const { control, handleSubmit } = useForm<Coords>();
+    //const { control, handleSubmit } = useForm<Coords>();
     const [isEditorOpen, setEditorOpen] = useState<boolean>(false);
     const [isContentOpen, setContentOpen] = useState<boolean>(false);
 
@@ -102,9 +103,6 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         img.src = "../../gui/cursor.png";
         return img;
     }
-    const onSubmit = (data: Coords) => {
-        setActiveCell(data);
-    }
 
     const onSave = () => {
         var exportLevel = JSON.stringify(level);
@@ -142,37 +140,62 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         setContentOpen(false);
     }
 
+    const copy = () => {
+        setCopiedCell(activeCell);
+    }
+
+    const paste = () => {
+        if (copiedCell != undefined)
+        {
+            var vCell = level.grid[copiedCell.posY][activeCell.posX];
+
+        }
+
+
+
+
+    }
     return (
         <div>
             <div className=''>
                 <div>
-                    <div className='grid grid-cols-2'>
-                        <div className="grid grid-cols-7">
+                    <div className='grid grid-cols-5'>
+                        <div className="grid grid-cols-3">
                             <div></div>
                             <div className="mx-auto"><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
                             <div></div>
-                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setContentOpen(true)}>
-                                Add Content
-                            </Button></div>
-                            <div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div>
 
                             <div className="flex"><div className="flex-grow"></div><Button onClick={() => moveCursor('l')}><CaretLeftOutlined /></Button></div>
                             <div className="text-center m-1">{activeCell.posX}, {activeCell.posY}</div>
                             <div className="flex"><Button onClick={() => moveCursor('r')}><CaretRightOutlined /></Button><div className="flex-grow"></div></div>
-                            <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setEditorOpen(true)}>
-                                Add Content Alt
-                            </Button></div>
-                            <div className="col-span-2"></div>
 
                             <div></div>
                             <div className="mx-auto"><Button onClick={() => moveCursor('d')}><CaretDownOutlined /></Button></div>
                             <div></div>
+                        </div>
+                        <div className="">
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setContentOpen(true)}>
+                                Add Content
+                            </Button></div>
+                            <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setEditorOpen(true)}>
+                                Add Content Alt
+                            </Button></div>
+                            <div className="col-span-2"></div>
                             <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
                                 Edit
                             </Button></div>
                             <div className="col-span-2"></div>
                         </div>
+                        <div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => copy()}>
+                                Copy Cell
+                            </Button></div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={() => setContentOpen(true)}>
+                                Paste Cell
+                            </Button></div>
+                        </div>
                         <div></div>
+                        <div><div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div></div>
                     </div>
                     <div>
                     </div>
