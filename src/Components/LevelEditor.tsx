@@ -222,7 +222,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                     height={96}
                                                     x={coords.posX + dimensions.w / 2 - TILE_SIZE}
                                                     y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)}
-                                                    anchor={{ x: 0.33, y: 0.68 }} />
+                                                    anchor={{ x: 0.33, y: 0.71 }} />
 
                                             }
                                         </>

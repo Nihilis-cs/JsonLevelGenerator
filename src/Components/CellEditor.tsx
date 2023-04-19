@@ -24,7 +24,7 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
     }
   });
   const newTileCode: TileSet = { tileCode: 11, posZ: 0, height: 0 }
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "tileCode",
   });
@@ -68,40 +68,23 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
     <Modal open={open} closable={true} title={getTitle()} onCancel={handleCancel} onOk={handleSubmit(onSubmit)}>
       <div className='h-80'>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Button onClick={() => { append(newTileCode) }} >+</Button>
-          <Button onClick={() => { remove(cell.tileCode.length) }} >-</Button>
-          <div className='grid grid-cols-3'>
-            <div>
+          <div className="grid grid-cols-4 ">
+            <Button onClick={() => { remove(cell.tileCode.length) }}>-</Button>
+            <Button onClick={() => { append(newTileCode) }} >+</Button>
+
+          </div>
+          <div className='grid grid-cols-2'>
+            <div className="overflow-auto">
               {controlledFields.map((field, index) => {
                 return (
-                <div className='grid grid-cols-2'>
-                  <input type='number' {...register(`tileCode.${index}.tileCode` as const)} />
-                  <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32} />
-                </div>);
+                  <div className='grid grid-cols-3 gap-4'>
+                    <input type='number' {...register(`tileCode.${index}.tileCode` as const)} />
+                    <img className="col-span-2" src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32} />
+                  </div>);
               })}
-              {/* {fields.map((field, index) => (
-                <div key={field.id}>
-                  <section className={"section"} key={field.id}>
-                    <div className='grid grid-cols-2'>
-                      <input
-                        placeholder='TileCode'
-                        defaultValue={index < cell.tileCode.length ? cell.tileCode[index].tileCode : 8}
-                        {...register(`tileCode.${index}.tileCode` as const)}
-                      /> */}
-              {/* <input
-                        placeholder="PosZ"
-                        defaultValue={index < cell.tileCode.length ? cell.tileCode[index].posZ : 0}
-                        {...register(`tileCode.${index}.posZ` as const)}
-                      /> */}
-              {/* {(index < cell.tileCode.length) &&
-                        <img src={'../../tiles/' + field.tileCode + '.png'} width={32} height={32}/>
-                      }
-                    </div>
-                  </section>
-                </div>
-              ))} */}
+
             </div>
-            <div></div>
+
             <div>
               <div className='grid grid-cols-2'>
                 <span className='text-center'> Is Walkable:</span>
@@ -115,9 +98,9 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
                   }
                 />
               </div>
-              <div>
-              </div>
+              {/* <div>
               <Button type='default' onClick={handleSubmit(onSubmit)}>Submit</Button>
+              </div> */}
             </div>
           </div>
         </form>
