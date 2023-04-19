@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Content, Coords, IsoCell, Level, TileSet } from '../Types/level.types';
-import { Sprite, Stage } from '@pixi/react';
+import { Container, Sprite, Stage } from '@pixi/react';
 import { CellEditor } from './CellEditor';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Input } from 'antd';
 import { CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { ContentEditor } from './ContentEditor';
+import texturesDico from '../Dictionary/text.dico';
 
 
 
@@ -141,6 +142,16 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         setContentOpen(false);
     }
 
+    const mask = () => {
+        return (
+            <>
+                <Container position={[0, 0]}>
+
+                </Container>
+            </>
+        )
+    }
+
 
     return (
         <div>
@@ -203,28 +214,33 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                     let coords = twoDToIso({ posX: indexX * TILE_SIZE, posY: indexY * TILE_SIZE })
                                     return (
                                         <>
-                                            {cell.tileCode.map((tile) => {
-                                                return (
-                                                    <Sprite
-                                                        key={indexX + ' ' + indexY + ' ' + tile.posZ}
-                                                        image={getTile(tile)}
-                                                        width={32}
-                                                        height={32}
-                                                        x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                        y={coords.posY + TILE_SIZE - (tile.posZ * 2)} />)
-                                            }
-                                            )}
-                                            {cell.content.length != 0 &&
-                                                <Sprite
-                                                    key={indexX + ' ' + indexY + ' ' + cell.content[0].posZ}
-                                                    image={getContent(cell.content[0].image_index)}
-                                                    width={96}
-                                                    height={96}
-                                                    x={coords.posX + dimensions.w / 2 - TILE_SIZE}
-                                                    y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)}
-                                                    anchor={{ x: 0.33, y: 0.71 }} />
+                                            <Container position={[0, 0]}>
+                                                {cell.tileCode.map((tile) => {
+                                                    return (
+                                                        <Sprite
+                                                            key={indexX + ' ' + indexY + ' ' + tile.posZ}
+                                                            image={texturesDico[tile.tileCode]}
+                                                            width={32}
+                                                            height={32}
+                                                            x={coords.posX + dimensions.w / 2 - TILE_SIZE}
+                                                            y={coords.posY + TILE_SIZE - (tile.posZ * 2)} />)
+                                                }
+                                                )}
 
-                                            }
+                                            </Container>
+                                            <Container position={[0, 0]}>
+                                                {cell.content.length != 0 &&
+                                                    <Sprite
+                                                        key={indexX + ' ' + indexY + ' ' + cell.content[0].posZ}
+                                                        image={getContent(cell.content[0].image_index)}
+                                                        width={96}
+                                                        height={96}
+                                                        x={coords.posX + dimensions.w / 2 - TILE_SIZE}
+                                                        y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)}
+                                                        anchor={{ x: 0.33, y: 0.71 }} />
+
+                                                }
+                                            </Container>
                                         </>
                                     )
 
@@ -233,12 +249,14 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                             )
 
                         })}
-                        <Sprite
-                            image={getCursor()}
-                            width={32}
-                            height={32}
-                            x={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posX + dimensions.w / 2 - TILE_SIZE}
-                            y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY + TILE_SIZE} />
+                        <Container position={[0, 0]}>
+                            <Sprite
+                                image={getCursor()}
+                                width={32}
+                                height={32}
+                                x={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posX + dimensions.w / 2 - TILE_SIZE}
+                                y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY + TILE_SIZE} />
+                        </Container>
                     </Stage>
                 </div>
             </div >
