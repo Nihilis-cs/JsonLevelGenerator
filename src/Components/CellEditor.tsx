@@ -98,9 +98,6 @@ export function CellEditor({ cell, open, onSaveChanges, onCancel }: ICellEditorP
                   }
                 />
               </div>
-              {/* <div>
-              <Button type='default' onClick={handleSubmit(onSubmit)}>Submit</Button>
-              </div> */}
             </div>
           </div>
         </form>

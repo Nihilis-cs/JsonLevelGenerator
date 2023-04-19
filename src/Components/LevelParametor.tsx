@@ -1,6 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 
-import { Button, Input } from 'antd';
+import { Button, Divider, Input } from 'antd';
 import { useState } from 'react';
 import { LevelEditor } from './LevelEditor';
 import { LevelEditorParams } from '../Types/level.types';
@@ -20,29 +20,31 @@ function LevelParametor() {
 
     return (
         <div>
-            <div>
-                <span className='text-2xl'>Level Parameters</span>
+            <div className="mb-8">
+                <div className='text-2xl mb-2'>Level Parameters</div>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='grid grid-cols-3 gap-4'>
-                        <div>
+                        <div className='grid grid-cols-2'>
+                            <div className="text-xl text-right mr-4">Length of columns:</div>
                             <Controller
                                 control={control}
                                 name="lines"
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Length of columns" allowClear {...field} />
+                                        <input className="form-input rounded-lg border-0 h-8" type='number' {...field} />
                                     </>}
                             />
                         </div>
-                        <div>
+                        <div className='grid grid-cols-2'>
+                            <div className="text-xl text-right mr-4">Length of lines:</div>
                             <Controller
                                 control={control}
                                 name="columns"
                                 rules={{ required: true, min: 0, max: 400 }}
                                 render={({ field, fieldState }) =>
                                     <>
-                                        <Input type='number' placeholder="Length of lines" allowClear {...field} />
+                                        <input className="form-input rounded-lg border-0 h-8" type='number' {...field} />
                                         {fieldState.error && <div>{fieldState.error.message}</div>}
                                     </>}
                             />
@@ -61,7 +63,8 @@ function LevelParametor() {
 
                     </div>
                 </form>
-            </div>
+                <Divider></Divider>
+            </div >
             {isInitialized &&
                 <div>
                     <LevelEditor lines={levelData?.lines ?? 0} columns={levelData?.columns ?? 0}></LevelEditor>

@@ -142,49 +142,37 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         setContentOpen(false);
     }
 
-    const mask = () => {
-        return (
-            <>
-                <Container position={[0, 0]}>
-
-                </Container>
-            </>
-        )
-    }
-
-
     return (
         <div>
             <div className=''>
                 <div>
                     <div className='grid grid-cols-2'>
-                        <div className="grid grid-cols-6">
+                        <div className="grid grid-cols-7">
                             <div></div>
-                            <div><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
+                            <div className="mx-auto"><Button onClick={() => moveCursor('u')}><CaretUpOutlined /></Button></div>
                             <div></div>
                             <div className='w-32 col-span-2'><Button type="default" block onClick={() => setContentOpen(true)}>
                                 Add Content
                             </Button></div>
-                            <div><Button className='w-32' type="default" block onClick={onSave}>Save Level</Button></div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div>
 
-                            <div><Button onClick={() => moveCursor('l')}><CaretLeftOutlined /></Button></div>
+                            <div className="flex"><div className="flex-grow"></div><Button onClick={() => moveCursor('l')}><CaretLeftOutlined /></Button></div>
                             <div className="text-center m-1">{activeCell.posX}, {activeCell.posY}</div>
-                            <div><Button onClick={() => moveCursor('r')}><CaretRightOutlined /></Button></div>
+                            <div className="flex"><Button onClick={() => moveCursor('r')}><CaretRightOutlined /></Button><div className="flex-grow"></div></div>
                             <div className='w-32 col-span-2'><Button type="default" block disabled onClick={() => setEditorOpen(true)}>
                                 Add Content Alt
                             </Button></div>
-                            <div></div>
+                            <div className="col-span-2"></div>
 
                             <div></div>
-                            <div><Button onClick={() => moveCursor('d')}><CaretDownOutlined /></Button></div>
+                            <div className="mx-auto"><Button onClick={() => moveCursor('d')}><CaretDownOutlined /></Button></div>
                             <div></div>
                             <div className='w-32 col-span-2'><Button type="default" block onClick={() => setEditorOpen(true)}>
                                 Edit
                             </Button></div>
+                            <div className="col-span-2"></div>
                         </div>
                         <div></div>
-
-
                     </div>
                     <div>
                     </div>
