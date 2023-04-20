@@ -9,6 +9,7 @@ import { CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CaretUpOutlin
 import { ContentEditor } from './ContentEditor';
 import texturesDico from '../Dictionary/text.dico';
 import { ContentAltEditor } from './ContentAltEditor';
+import { CellDetails } from './CellDetails';
 
 
 
@@ -129,8 +130,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
         setLevel(vLevel);
         setContentOpen(false);
     }
-    const editContentAlt =(content: ContentAlt) =>
-    {
+    const editContentAlt = (content: ContentAlt) => {
         var vCell = level.grid[activeCell.posY][activeCell.posX];
         vCell.contentAlt = [content];
         var vLevel = level;
@@ -155,7 +155,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     const paste = () => {
         if (copiedCell != undefined) {
             var vCell = level.grid[copiedCell.posY][copiedCell.posX];
-            var vNewCell: IsoCell = { content: vCell.content, contentAlt: vCell.contentAlt, heightPixels: vCell.heightPixels, isWalkable: vCell.isWalkable, tileCode: []}
+            var vNewCell: IsoCell = { content: vCell.content, contentAlt: vCell.contentAlt, heightPixels: vCell.heightPixels, isWalkable: vCell.isWalkable, tileCode: [] }
             vCell.tileCode.forEach(tile => {
                 vNewCell.tileCode.push(tile);
             });
@@ -164,7 +164,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     }
     return (
         <div>
-            <div className=''>
+            <div className='h-full'>
                 <div>
                     <div className='grid grid-cols-5'>
                         <div className="grid grid-cols-3">
@@ -201,7 +201,9 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                 Paste Cell
                             </Button></div>
                         </div>
-                        <div></div>
+                        <div>
+
+                        </div>
                         <div><div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div></div>
                     </div>
                     <div></div>
@@ -213,7 +215,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                         onCancel={() => setEditorOpen(false)}
                         onSaveChanges={(cell?) => { editCell(cell!) }} />
 
-                    <ContentEditor 
+                    <ContentEditor
                         cell={level.grid[activeCell.posY][activeCell.posX]}
                         coords={activeCell}
                         open={isContentOpen}
@@ -230,7 +232,13 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                         emptyContentAlt={() => emptyContentAlt()}
                     />
                 </div>
-                <div className="overflow-auto flex justify-center mt-8" >
+                <div className="overflow-auto flex flex-row mt-8 h-full" >
+                    <div className='flex-shrink mx-2'>
+                        {level.grid &&
+                            <CellDetails cell={level.grid[activeCell.posY][activeCell.posX]} />
+                        }
+                    </div>
+                    <div className="justify-center"></div>
                     <Stage width={dimensions.w} height={dimensions.h} options={{ backgroundColor: "#ffffff" }}>
                         {level.grid.map((line, indexY) => {
                             return (
@@ -250,7 +258,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                             y={coords.posY + TILE_SIZE - (tile.posZ * 2)} />)
                                                 }
                                                 )}
-                                            {/* </Container>
+                                                {/* </Container>
                                             <Container position={[0, 0]}> */}
                                                 {cell.content.length != 0 &&
                                                     <Sprite
@@ -270,7 +278,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                         height={32}
                                                         x={coords.posX + dimensions.w / 2 - TILE_SIZE}
                                                         y={coords.posY + TILE_SIZE - (cell.contentAlt[0].heightPixels * 2)}
-                                                        />
+                                                    />
                                                 }
                                             </Container>
                                         </>
@@ -284,7 +292,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                 width={32}
                                 height={32}
                                 x={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posX + dimensions.w / 2 - TILE_SIZE}
-                                y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY + TILE_SIZE - level.grid[activeCell.posY][activeCell.posX].heightPixels*2} />
+                                y={twoDToIso({ posX: activeCell.posX * TILE_SIZE, posY: activeCell.posY * TILE_SIZE }).posY + TILE_SIZE - level.grid[activeCell.posY][activeCell.posX].heightPixels * 2} />
                         </Container>
                     </Stage>
                 </div>
