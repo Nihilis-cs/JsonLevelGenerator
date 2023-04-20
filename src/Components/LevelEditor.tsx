@@ -262,6 +262,16 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                                                         y={coords.posY + TILE_SIZE - (cell.content[0].posZ * 2)}
                                                         anchor={{ x: 0.33, y: 0.71 }} />
                                                 }
+                                                {cell.contentAlt.length != 0 &&
+                                                    <Sprite
+                                                        key={indexX + ' ' + indexY + ' ' + cell.contentAlt[0].tileCode[0].tileCode}
+                                                        image={texturesDico[cell.contentAlt[0].tileCode[0].tileCode]}
+                                                        width={32}
+                                                        height={32}
+                                                        x={coords.posX + dimensions.w / 2 - TILE_SIZE}
+                                                        y={coords.posY + TILE_SIZE - (cell.contentAlt[0].heightPixels * 2)}
+                                                        />
+                                                }
                                             </Container>
                                         </>
                                     )
