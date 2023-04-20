@@ -10,7 +10,7 @@ import { ContentEditor } from './ContentEditor';
 import texturesDico from '../Dictionary/text.dico';
 import { ContentAltEditor } from './ContentAltEditor';
 import { CellDetails } from './CellDetails';
-
+import * as fs from 'fs';
 
 
 
@@ -24,6 +24,10 @@ export type Dimensions = {
     h: number;
 }
 
+export type ImportForm = {
+    file: string;
+}
+
 
 export function LevelEditor(props: ILevelEditorTableProps) {
     const newCell = { tileCode: [{ tileCode: 8, posZ: 0, height: 0 }], heightPixels: 0, isWalkable: true, content: [], contentAlt: [] }
@@ -35,7 +39,7 @@ export function LevelEditor(props: ILevelEditorTableProps) {
     const [isEditorOpen, setEditorOpen] = useState<boolean>(false);
     const [isContentOpen, setContentOpen] = useState<boolean>(false);
     const [isContentAltOpen, setContentAltOpen] = useState<boolean>(false);
-
+    const {control, handleSubmit, formState} = useForm<ImportForm>();
     const captureMousePos = (e: React.MouseEvent) => {
         var coords = isoTo2D({ posX: e.clientX, posY: e.clientY })
         var mouseX: number = Math.round(coords.posX / TILE_SIZE) - TILE_SIZE / 2;
@@ -69,11 +73,17 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             }
 
         }
-        setDimensions({ w: props.lines * 2 * TILE_SIZE * 2 + TILE_SIZE * 2, h: props.columns * 1.5 * TILE_SIZE + TILE_SIZE * 2 });
+        //setDimensions({ w: props.lines * 2 * TILE_SIZE * 2 + TILE_SIZE * 2, h: props.columns * 1.5 * TILE_SIZE + TILE_SIZE * 2 });
+        setDimensions({
+            w: (props.columns * TILE_SIZE * Math.cos(30 * Math.PI / 180) + props.lines * TILE_SIZE * Math.sin(30 * Math.PI / 180)) * 2,
+            h: (props.columns * TILE_SIZE * Math.sin(30 * Math.PI / 180) + props.lines * TILE_SIZE * Math.cos(30 * Math.PI / 180))
+        });
+
         setLevel(vLevel);
     }, [props.lines, props.columns]);
 
     const moveCursor = (dir: string) => {
+        console.log(dimensions);
         if (dir === 'r' && activeCell.posX < props.lines - 1) {
             setActiveCell({ posX: activeCell.posX + 1, posY: activeCell.posY })
         }
@@ -162,6 +172,17 @@ export function LevelEditor(props: ILevelEditorTableProps) {
             editCell(vNewCell);
         }
     }
+    const onImport = (data: ImportForm) => {
+        console.log(data);
+        var vLevel : Level = JSON.parse(data.file);
+        console.log(vLevel);
+        setDimensions({
+            w: (vLevel.grid.length * TILE_SIZE * Math.cos(30 * Math.PI / 180) + vLevel.grid[0].length * TILE_SIZE * Math.sin(30 * Math.PI / 180)) * 2,
+            h: (vLevel.grid.length * TILE_SIZE * Math.sin(30 * Math.PI / 180) + vLevel.grid[0].length * TILE_SIZE * Math.cos(30 * Math.PI / 180))
+        });
+        setLevel(vLevel);
+    }
+
     return (
         <div>
             <div className='h-full'>
@@ -202,9 +223,21 @@ export function LevelEditor(props: ILevelEditorTableProps) {
                             </Button></div>
                         </div>
                         <div>
-
+                            <form onSubmit={handleSubmit(onImport)}>
+                                <Controller
+                                    name="file"
+                                    control={control}
+                                    render={({field})=> {
+                                        return <><input  accept='.txt' {...field}></input></>;
+                                    }}/>
+                                <Button type="default" htmlType="submit">
+                                    Import
+                                </Button>
+                            </form>
                         </div>
-                        <div><div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div></div>
+                        <div>
+                            <div className='w-32 col-span-2'><Button type="default" block onClick={onSave}>Save Level</Button></div>
+                        </div>
                     </div>
                     <div></div>
                 </div>
